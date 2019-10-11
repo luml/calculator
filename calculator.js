@@ -9,7 +9,7 @@ const screen = document.querySelector('.screen');
 // operation for different operator symbol, +=*/
 function flushOperation(intBuffer){
     if(previousOperator === '+'){
-        runningTotal += intBuffer;// 0 + 9, intBuffer = 9
+        runningTotal += intBuffer;
     } else if(previousOperator === '-'){
         runningTotal -= intBuffer;
     } else if(previousOperator === '*'){
@@ -25,9 +25,9 @@ function handleMath(symbol){
         // Do nothing
         return;
     }
-    const intBuffer = parseInt(buffer);// '9' parseInt to 9
+    const intBuffer = parseInt(buffer);
     if(runningTotal === 0){
-        runningTotal = intBuffer; // runningTotal = 9
+        runningTotal = intBuffer;
     }else{
         flushOperation(intBuffer);
     }
@@ -35,16 +35,22 @@ function handleMath(symbol){
     buffer = '0';
 }
 
-// symbols operator
+// symbols operator; clean up the screen when operator is 'C' or '🔙'
 function handleSymbols(symbol) {
     // previousOperator = symbol;
     switch(symbol) {
         case '🔙':
-        // TODO what do we want it to go back?
+        // go back when type more than 2 numbers on the screen
+            if(buffer.length>1){
+                console.log('buffer.length > 1', buffer);
+                buffer = buffer.split('').slice(0, buffer.length-1).join('');
+                screen.innerText = buffer;
+            }
             break;
         case 'C':
             buffer = '0';
             runningTotal = 0;
+            screen.innerText = buffer;
             break;
         case '=':
             if(previousOperator === null){
@@ -52,7 +58,7 @@ function handleSymbols(symbol) {
             }
             handleMath(symbol);
             previousOperator = null;
-            console.log('Click = runningTotal: ' + runningTotal);// Why is this 12?
+            console.log('Click = runningTotal: ' + runningTotal);
             buffer = runningTotal;
             runningTotal = 0;
             screen.innerText = buffer;
@@ -81,7 +87,7 @@ function handleNumbers(numberString) {
     if(buffer === '0'){
         buffer = numberString;
     }else{
-        buffer += numberString; // if click two number in a row, buffer = 23
+        buffer += numberString;
     }
 }
 
